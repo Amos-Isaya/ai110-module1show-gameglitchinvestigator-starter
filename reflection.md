@@ -21,7 +21,7 @@ Codex inspected the repository and reproduced failures using Streamlit AppTest a
 
 ## 3. Debugging and testing your fixes
 
-Baseline evidence: three original pytest tests failed with NotImplementedError. Streamlit AppTest reproduced two game sessions without startup exceptions and exposed reversed hints, scoring, decimal parsing, and reset bugs. Final verification results will be recorded after the repairs.
+Baseline evidence: three original pytest tests failed with NotImplementedError. Streamlit AppTest reproduced two game sessions without startup exceptions and exposed reversed hints, scoring, decimal parsing, and reset bugs. After repairs, all 21 pytest tests passed, including the three original tests and two Streamlit UI tests. The UI suite verifies both hint directions, a win with score 70 after three guesses, disabled submissions after completion, fresh-round reset, invalid inputs without attempt consumption, difficulty changes, and loss after six Easy misses. A running Streamlit server also returned ok from its health endpoint, and pip check reported no broken requirements.
 
 ## 4. What did you learn about Streamlit and state?
 

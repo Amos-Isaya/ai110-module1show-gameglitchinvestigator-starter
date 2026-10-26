@@ -1,76 +1,21 @@
 # AI Interactions Log
 
-> **Stretch features only.** Only fill in the sections that apply to stretch features you attempted. If you did not attempt a stretch feature, leave its section blank or delete it. This file is not required for the core project.
+## Actual request and scope
 
----
+The user asked Codex: “do thsi from codepath push and do teh changes and everything let me know how I can connect with vs code”, supplying the project instructions. Codex derived the repair and testing tasks from that request; no separate student prompts or manual review are claimed.
 
-## Agent Workflow (SF8)
+## Test Generation — Challenge 1
 
-> Document your experience using an AI agent (e.g., Cursor Agent, Claude, Copilot) to make multi-step changes autonomously.
+| Edge case | Prompt source | Test and reason | Result |
+|---|---|---|---|
+| Negative integer | User request plus supplied Challenge 1 instructions | Parser accepts signed integers; UI rejects values outside the selected range without spending attempts | Passed |
+| Decimal 3.9 | Same request | Reject decimal text rather than silently truncating to 3 | Passed |
+| Extremely large integer | Same request | Parse a 100-digit integer safely; reject it at the UI range boundary | Passed |
 
-**What task did you give the agent?**
+Additional tests cover whitespace, blank values, nonnumeric text, scientific notation, score floors, both hint directions, reset after winning, loss, and difficulty changes. Original tests remain unchanged; tests were appended to their file and UI regressions added separately.
 
-<!-- Describe the goal you asked the agent to accomplish -->
+## Agent work and review
 
-**What did the agent do?**
+Codex modified app.py, logic_utils.py, tests/test_game_logic.py, tests/test_app.py, README.md, reflection.md, and this log. It reproduced starter failures before fixing them, ran pytest and pip check, and tested the live server health endpoint. The starter docstring suggested a tuple return for check_guess, but the existing tests required a string; the implementation follows those executable tests and maps messages in the UI. This records the agent's interface decision, not a fabricated student rejection of a separate AI conversation.
 
-<!-- List the steps the agent took (files edited, commands run, etc.) -->
-
-**What did you have to verify or fix manually?**
-
-<!-- Describe anything the agent got wrong or that required human review -->
-
----
-
-## Test Generation (SF7)
-
-> Document how you used AI to help generate or improve tests.
-
-| Edge Case | Prompt Used | AI-Suggested Test | Did It Pass? | Your Reasoning |
-|-----------|-------------|-------------------|--------------|----------------|
-| | | | | |
-| | | | | |
-| | | | | |
-
----
-
-## Linting & Style (SF9)
-
-> Document your use of AI for linting or code style improvements.
-
-**Prompt used:**
-
-```
-<!-- Paste the prompt you gave the AI -->
-```
-
-**Linting output before:**
-
-```
-<!-- Paste relevant linter warnings/errors -->
-```
-
-**Changes applied:**
-
-<!-- Describe what you changed based on the AI's suggestions -->
-
----
-
-## Model Comparison (SF11)
-
-> Compare two AI models on the same task.
-
-**Task given to both models:**
-
-<!-- Describe what you asked each model to do -->
-
-| | Model A | Model B |
-|-|---------|---------|
-| **Model name** | | |
-| **Response summary** | | |
-| **More Pythonic?** | | |
-| **Clearer explanation?** | | |
-
-**Which did you prefer and why?**
-
-<!-- Your conclusion -->
+Amos still needs to review the diff, play the app, and add his own personal reflection. No manual corrections by Amos, model comparison, or linting run are claimed.

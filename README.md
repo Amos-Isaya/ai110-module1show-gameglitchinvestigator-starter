@@ -1,54 +1,72 @@
-# 🎮 Game Glitch Investigator: The Impossible Guesser
+# Game Glitch Investigator
 
-## 🚨 The Situation
+A repaired Streamlit number guessing game for CodePath AI110. Choose Easy (1–20, 6 attempts), Normal (1–100, 8 attempts), or Hard (1–200, 5 attempts). Valid misses cost 5 points; a win earns 100 points on attempt one, decreasing by 10 per attempt to a minimum of 10. Scores are per round and reset with New Game.
 
-You asked an AI to build a simple "Number Guessing Game" using Streamlit.
-It wrote the code, ran away, and now the game is unplayable. 
+## Setup and run in VS Code
 
-- You can't win.
-- The hints lie to you.
-- The secret number seems to have commitment issues.
+Install Python 3.12, Git, VS Code, and the Microsoft Python extension. In a terminal:
 
-## 🛠️ Setup
-
-1. Install dependencies: `pip install -r requirements.txt`
-2. Run the broken app: `python -m streamlit run app.py`
-
-## 🕵️‍♂️ Your Mission
-
-1. **Play the game.** Open the "Developer Debug Info" tab in the app to see the secret number. Try to win.
-2. **Find the State Bug.** Why does the secret number change every time you click "Submit"? Ask ChatGPT: *"How do I keep a variable from resetting in Streamlit when I click a button?"*
-3. **Fix the Logic.** The hints ("Higher/Lower") are wrong. Fix them.
-4. **Refactor & Test.** - Move the logic into `logic_utils.py`.
-   - Run `pytest` in your terminal.
-   - Keep fixing until all tests pass!
-
-## 📝 Document Your Experience
-
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
-
-## 📸 Demo Walkthrough
-
-Describe your fixed game in numbered steps so a reader can follow along without watching a video:
-
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
-
-**Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
-
-## 🧪 Test Results
-
-```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+```bash
+git clone https://github.com/Amos-Isaya/ai110-module1show-gameglitchinvestigator-starter.git
+cd ai110-module1show-gameglitchinvestigator-starter
+code .
+python -m venv .venv
 ```
 
-## 🚀 Stretch Features
+On macOS/Linux, use `python3` if `python` is unavailable, then activate:
 
-- [ ] [If you choose to complete Challenge 4, describe the Enhanced UI changes here — a screenshot is optional]
+```bash
+source .venv/bin/activate
+```
+
+On Windows PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+In VS Code, run **Python: Select Interpreter** from the Command Palette and choose `.venv`. Then use its integrated terminal:
+
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q
+python -m streamlit run app.py
+```
+
+Open the browser address Streamlit prints on your own computer. Stop the server with Ctrl+C. No API keys or paid services are needed. The cloud environment is separate from your laptop; clone or pull GitHub changes to work locally. If already cloned, commit or stash your local work before `git pull origin main`.
+
+## Document Your Experience
+
+- [x] Purpose: guess a persistent secret using accurate higher/lower feedback.
+- [x] Bugs diagnosed: reversed hints, alternating string/numeric comparisons, incorrect attempt counting, inconsistent scoring, decimal truncation, and partial resets.
+- [x] Repairs: moved pure rules into `logic_utils.py`, preserved the original string-return test contract, validated input before consuming attempts, and reset every round field together.
+- [x] Verified through original tests, additional edge cases, and automated Streamlit interactions.
+
+The starter already stored its secret in session state. Its claim that the secret changes on every submit was not supported by inspection. See `reflection.md` for reproduced evidence and the distinction between agent work and personal reflection.
+
+## Demo Walkthrough
+
+For this reproducible example, the automated UI test sets the secret to 50; normal play chooses randomly. Developer Debug Info reveals the live secret when trying it manually.
+
+1. Start a Normal game with 8 attempts, score 0, and secret 50.
+2. Submit 40: “Too Low — go HIGHER!”, 7 attempts remain, score -5.
+3. Submit 70: “Too High — go LOWER!”, 6 attempts remain, score -10.
+4. Submit 50: the game announces a win, adds 80 points, and ends at score 70.
+5. Further submissions are disabled. New Game clears input, history, score, attempts, and outcome and generates a new secret.
+6. A blank, decimal, negative, or out-of-range guess displays an error without consuming an attempt. Changing difficulty starts a fresh round with the new bounds.
+
+## Test Results
+
+Executed in the cloud environment with Python 3.12.14:
+
+```text
+$ python -m pytest -q
+.....................                                                    [100%]
+21 passed in 1.23s
+```
+
+`python -m pip check` reported no broken requirements. The live Streamlit health endpoint returned `ok`; AppTest exercised actual widgets and session state, including wins and losses. The three original tests are retained. Challenge 1 edge cases include negative values, decimals, and extremely large integers; see `ai_interactions.md`.
+
+## Before submitting
+
+Review the changes and play the game yourself. Complete the personal portions of `reflection.md` in your own words. Confirm the GitHub repository is public and submit its link through CodePath; pushing code does not submit the assignment.
