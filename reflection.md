@@ -1,51 +1,32 @@
-# 💭 Reflection: Game Glitch Investigator
+# Reflection: Game Glitch Investigator
 
-Answer each question in 3 to 5 sentences. Be specific and honest about what actually happened while you worked. This is about your process, not trying to sound perfect.
+These notes describe Codex-assisted inspection and automated runs. Personal learning statements should be reviewed and completed by Amos before submission.
 
 ## 1. What was broken when you started?
 
-- What did the game look like the first time you ran it?
-- List at least two concrete bugs you noticed at the start  
-  (for example: "the hints were backwards").
+The starter app rendered, but two automated play sessions exposed misleading hints and incomplete reset behavior. With the secret set to 50, guessing 60 displayed “Go HIGHER!”, counted two attempts, and awarded five points. After New Game, entering 3.9 silently became 3 and the previous history remained. The original three pytest tests all failed because logic_utils.check_guess raised NotImplementedError.
 
-**Bug Reproduction Log**
+### Bug Reproduction Logs
 
-Document at least 3 bugs you found. Add rows as needed.
-
-| Input | Expected Behavior | Actual Behavior | Console Output / Error |
-|-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
-
----
+| Input Used | Expected Behavior | Actual Behavior | Console Error / Output | Suspected Code Location |
+|---|---|---|---|---|
+| Secret 50, guess 60 | Too High; go lower; score -5 | Go HIGHER!; score +5 | Warning: Go HIGHER! | app.py check_guess, update_score |
+| First valid guess | One attempt consumed | Attempts becomes 2 | Debug attempts: 2 | app.py session initialization |
+| New Game, then 3.9 | Reject decimal; empty prior history | Parsed as 3; history [60, 3] | No exception | app.py parse_guess, new_game |
+| Run original pytest suite | Comparisons return outcome strings | All three fail | NotImplementedError | logic_utils.py check_guess |
 
 ## 2. How did you use AI as a teammate?
 
-- Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-- Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
-- Give one example of an AI suggestion you did not accept as written (including what the AI suggested, why you rejected or changed it, and how you verified your version). It does not have to be a suggestion that was wrong: over-engineered, out of scope, harder to read, or a poor fit for this codebase all count.
-
----
+Codex inspected the repository and reproduced failures using Streamlit AppTest and pytest. Its initial setup plan proposed leaving the intentionally broken starter untouched; the user changed that scope by requesting the CodePath repairs and push. The repair plan keeps check_guess returning a string, matching the existing tests, instead of copying the starter tuple interface suggested by its docstring. Tests and app interactions verify that interface decision; these are agent decisions, not a claim that the student personally reviewed a diff.
 
 ## 3. Debugging and testing your fixes
 
-- How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
-  and what it showed you about your code.
-- Did AI help you design or understand any tests? How?
-
----
+Baseline evidence: three original pytest tests failed with NotImplementedError. Streamlit AppTest reproduced two game sessions without startup exceptions and exposed reversed hints, scoring, decimal parsing, and reset bugs. Final verification results will be recorded after the repairs.
 
 ## 4. What did you learn about Streamlit and state?
 
-- How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
-
----
+Streamlit reruns the script when a widget changes. Session state retains values between these reruns, so the secret should be generated only at initialization or explicit reset. Resetting a round must also reset attempts, history, and terminal status together. The starter already persisted its secret; the README claim that it always changes was not supported by the code.
 
 ## 5. Looking ahead: your developer habits
 
-- What is one habit or strategy from this project that you want to reuse in future labs or projects?
-  - This could be a testing habit, a prompting strategy, or a way you used Git.
-- What is one thing you would do differently next time you work with AI on a coding task?
-- In one or two sentences, describe how this project changed the way you think about AI generated code.
+Suggested habits are to reproduce a bug before editing, retain existing tests, and verify both pure logic and UI transitions. AI output needs verification because comments and documentation can disagree with executable behavior. Amos should add his own account of what he learned and what he would do differently after reviewing and playing the finished project. No personal experiences or manual reviews are asserted on his behalf.
