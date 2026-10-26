@@ -55,3 +55,38 @@ def test_invalid_input_difficulty_and_loss():
     assert at.session_state.status == "playing"
     assert 1 <= at.session_state.secret <= 200
     assert at.session_state.attempts == 0
+
+
+def test_first_try_win_and_hidden_hint_preserve_secret():
+    at = AppTest.from_file(APP).run()
+    at.session_state.secret = 1
+    at.checkbox[0].uncheck().run()
+    assert at.session_state.secret == 1
+    guess(at, "1")
+    assert at.session_state.status == "won"
+    assert at.session_state.attempts == 1
+    assert at.session_state.score == 100
+    assert not at.warning
+
+
+def test_win_on_final_attempt_and_restart_after_loss():
+    at = AppTest.from_file(APP).run()
+    at.selectbox[0].select("Easy").run()
+    at.session_state.secret = 20
+    for _ in range(5):
+        guess(at, "1")
+    guess(at, "20")
+    assert at.session_state.status == "won"
+    assert at.session_state.score == 25
+    click(at, "New Game 🔁")
+    at.session_state.secret = 20
+    for _ in range(6):
+        guess(at, "1")
+    assert at.session_state.status == "lost"
+    assert next(b for b in at.button if b.label == "Submit Guess 🚀").disabled
+    click(at, "New Game 🔁")
+    assert at.session_state.status == "playing"
+    assert at.session_state.history == []
+    assert at.session_state.attempts == at.session_state.score == 0
+    assert at.session_state.feedback is None
+    assert 1 <= at.session_state.secret <= 20

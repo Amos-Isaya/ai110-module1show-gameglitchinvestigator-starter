@@ -1,6 +1,6 @@
 # Reflection: Game Glitch Investigator
 
-These notes describe Codex-assisted inspection and automated runs. Personal learning statements should be reviewed and completed by Amos before submission.
+AI-assisted reflection draft based on the actual repository changes and automated runs. Review it before submitting; automated play is distinguished from personal manual testing.
 
 ## 1. What was broken when you started?
 
@@ -17,11 +17,11 @@ The starter app rendered, but two automated play sessions exposed misleading hin
 
 ## 2. How did you use AI as a teammate?
 
-Codex inspected the repository and reproduced failures using Streamlit AppTest and pytest. Its initial setup plan proposed leaving the intentionally broken starter untouched; the user changed that scope by requesting the CodePath repairs and push. The repair plan keeps check_guess returning a string, matching the existing tests, instead of copying the starter tuple interface suggested by its docstring. Tests and app interactions verify that interface decision; these are agent decisions, not a claim that the student personally reviewed a diff.
+I used Codex to investigate the starter project, refactor the rules into logic_utils.py, and generate regression tests. One useful AI suggestion was to use one reset function for initialization, New Game, and difficulty changes, because all three actions need consistent state; the UI tests verify that attempts, history, score, and status reset together. One part of the original AI-generated design that needed modification was the tuple return described for check_guess: the existing tests expected an outcome string, so the repaired version returns a string and the UI supplies the message separately. This keeps the function compatible with the original test set and avoids mixing presentation with comparison logic. The automated results verify these technical choices, while I still need to review the finished changes and try the game myself.
 
 ## 3. Debugging and testing your fixes
 
-Baseline evidence: three original pytest tests failed with NotImplementedError. Streamlit AppTest reproduced two game sessions without startup exceptions and exposed reversed hints, scoring, decimal parsing, and reset bugs. After repairs, all 21 pytest tests passed, including the three original tests and two Streamlit UI tests. The UI suite verifies both hint directions, a win with score 70 after three guesses, disabled submissions after completion, fresh-round reset, invalid inputs without attempt consumption, difficulty changes, and loss after six Easy misses. A running Streamlit server also returned ok from its health endpoint, and pip check reported no broken requirements.
+Baseline evidence: three original pytest tests failed with NotImplementedError. Streamlit AppTest reproduced two game sessions without startup exceptions and exposed reversed hints, scoring, decimal parsing, and reset bugs. After repairs, all 23 pytest tests passed, including the three original tests and four Streamlit UI tests. The UI suite verifies both hint directions, a win with score 70 after three guesses, disabled submissions after completion, fresh-round reset, invalid inputs without attempt consumption, difficulty changes, and loss after six Easy misses. Additional boundary checks cover a first-try win, a win on the final allowed attempt, and restarting after a loss. A running Streamlit server also returned ok from its health endpoint, and pip check reported no broken requirements.
 
 ## 4. What did you learn about Streamlit and state?
 
@@ -29,4 +29,4 @@ Streamlit reruns the script when a widget changes. Session state retains values 
 
 ## 5. Looking ahead: your developer habits
 
-Suggested habits are to reproduce a bug before editing, retain existing tests, and verify both pure logic and UI transitions. AI output needs verification because comments and documentation can disagree with executable behavior. Amos should add his own account of what he learned and what he would do differently after reviewing and playing the finished project. No personal experiences or manual reviews are asserted on his behalf.
+One habit I want to reuse is reproducing a bug with a specific input and expected output before changing the code. Next time, I would ask AI to focus on one bug at a time and explain its proposed fix before making broad edits. This project demonstrates why AI-generated code needs verification: even the starter documentation described a secret-reset bug that the code did not actually have. A human-in-the-loop process matters because passing tests are evidence about the tested behavior, not a guarantee that every AI claim is correct. I would use a small test set, diff review, and manual play together rather than relying only on an AI explanation or possible hallucination.

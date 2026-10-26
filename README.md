@@ -61,12 +61,16 @@ Executed in the cloud environment with Python 3.12.14:
 
 ```text
 $ python -m pytest -q
-.....................                                                    [100%]
-21 passed in 1.23s
+.......................                                                  [100%]
+23 passed in 1.54s
 ```
 
 `python -m pip check` reported no broken requirements. The live Streamlit health endpoint returned `ok`; AppTest exercised actual widgets and session state, including wins and losses. The three original tests are retained. Challenge 1 edge cases include negative values, decimals, and extremely large integers; see `ai_interactions.md`.
 
+## Requirement audit
+
+See `assignment_checklist.md` for the requirement-by-requirement review, verification evidence, and remaining personal/submission steps.
+
 ## Before submitting
 
-Review the changes and play the game yourself. Complete the personal portions of `reflection.md` in your own words. Confirm the GitHub repository is public and submit its link through CodePath; pushing code does not submit the assignment.
+Review the changes and play the game yourself. Read the AI-assisted draft in `reflection.md` and adjust it to match your understanding and experience. The audit confirmed the GitHub repository is public; recheck visibility if you change settings and submit its link through CodePath; pushing code does not submit the assignment.
